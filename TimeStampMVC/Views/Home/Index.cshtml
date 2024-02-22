@@ -1,0 +1,88 @@
+﻿@using TimeStampLibary.ViewModels
+@using TimeStampLibary.Models
+@model IndexModel
+
+
+
+@{
+    //ViewData["Title"] = "Mitarbeiterverwaltung - Zeiterfassung und Zugangskontrolle";
+    //List<EmployeeModel> testList = new List<EmployeeModel>() { new() { Surname = "Test1", GivenName = "Test2", Email = "test@test.de", CardNumber = "xf8c" } };
+}
+
+
+<div>
+    <h1 class="display-6 pb-1 mb-3 myblue">Testseite des Zeiterfassungs- und Türöffnungsbackend für Arduino</h1>
+
+    <h2 class="pb-1 myred mysize">Anlegen neuer Mitarbeiter über Api</h2>
+
+    <form asp-action="AddEmployee" method="post" asp-controller="Employee" class="mywidth">
+        <div class="form-row align-items-center">
+            <div class="col-auto">
+                <label for="GivenName" class="col-form-label">Vorname</label>
+            </div>
+            <div class="col">
+                @Html.TextBoxFor(m => m.NewEmployee.GivenName, new { @class = "form-control", @id = "GivenName", @required = "required" })
+            </div>
+        </div>
+        <div class="form-row align-items-center mt-2">
+            <div class="col-auto">
+                <label for="Surname" class="col-form-label">Nachname</label>
+            </div>
+            <div class="col">
+                @Html.TextBoxFor(m => m.NewEmployee.Surname, new { @class = "form-control", @id = "Surname", @required = "required" })
+            </div>
+        </div>
+        <div class="form-row align-items-center mt-2">
+            <div class="col-auto">
+                <label for="Email" class="col-form-label">Email</label>
+            </div>
+            <div class="col">
+                @Html.TextBoxFor(m => m.NewEmployee.Email, new { @class = "form-control", @id = "Email", @required = "required" })
+            </div>
+        </div>
+        <div class="form-row align-items-center mt-2">
+            <div class="col-auto">
+                <label for="CardNumber" class="col-form-label">Kartennummer</label>
+            </div>
+            <div class="col">
+                @Html.TextBoxFor(m => m.NewEmployee.CardNumber, new { @class = "form-control", id = "CardNumber", disabled = "disabled" })
+            </div>
+        </div>
+        <div class="form-row align-items-center mt-3">
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary mb-5">Speichern</button>
+            </div>
+        </div>
+    </form>
+
+    <h2 class="pb-1 mb-1 mysize myred">Abfragen Berechtigung zur Zeiterfassung des Mitarbeiters</h2>
+    <div class="list-group mywidth">
+        @foreach (var employee in Model.Employees)
+        {
+            <a href="#" class="list-group-item list-group-item-action" data-id="@employee.Id">
+                @employee.GivenName @employee.Surname - @employee.Email - @employee.CardNumber
+            </a>
+        }
+    </div>
+    <button id="checkPermission" class="btn btn-secondary mt-3 mb-5" disabled>Überprüfe Berechtigung</button>
+
+    <h2 class="pb-1 mb-1 mysize myred">Abfragen Berechtigung zur Türöffnung des Mitarbeiters</h2>
+
+    <div class="list-group mywidth">
+        @foreach (var employee in Model.Employees)
+        {
+            <a href="#" class="list-group-item list-group-item-action" data-id="@employee.Id">
+                @employee.GivenName @employee.Surname - @employee.Email - @employee.CardNumber
+            </a>
+        }
+    </div>
+    <button id="checkPermission" class="btn btn-secondary mt-3 mb-5" disabled>Überprüfe Berechtigung</button>
+
+    <p class="mywidth mysize myjustify">
+        Erläuterungen: Bei jedem erstmaligen Aufruf des UIs wird eine Datenbank mit den Beispielwerten erstellt. Nach Anlegen eines neuen Mitarbeiters,
+        wird dieser mit einer zufällig generierten Kartennummer versehen und über den Api-Controller, Service, Repository und DbContext in der Postgres
+        Datenbank, welche im Dockercontainer läuft abgespeichert. Der Mitarbeiter wird nun in der Liste angezeigt. Bei dem selbsterstellten und
+        Beispielmitarbeitern kann nun die Berechtigung zur Zeiterfassung oder Türöffnung abgefragt werden.
+    </p>
+
+</div>

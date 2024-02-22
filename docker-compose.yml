@@ -1,0 +1,41 @@
+version: '3.4'
+
+# Switch to release in VS
+
+services:
+  timestampmvc:
+    image: ${DOCKER_REGISTRY-}timestampmvc
+    build:
+      context: .
+      dockerfile: TimeStampMVC/Dockerfile
+    depends_on:
+      - db
+    ports:
+      - "80:80"
+      - "443:443" 
+    volumes:
+      - ./ssl/cert.cer:/https/cert.cer  # Sample-SSL-Certificate in repo for docker desktop
+      - ./ssl/key.key:/https/key.key  # Sample-Key in repo for docker desktop <from public repo>
+      
+      # overriding when on server
+      - /root/ssl/cert.cer:/https/cert.cer  # SSL-Zertifikat for production on linux server
+      - /root/ssl/key.key:/https/key.key  # SSL-Zertifikat for production on linux server <secred on server>
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/cert.cer
+      - ASPNETCORE_Kestrel__Certificates__Default__KeyPath=/https/key.key
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: stampdatabase
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+     - "5432:5432"
+
+
+volumes:
+  postgres_data:
