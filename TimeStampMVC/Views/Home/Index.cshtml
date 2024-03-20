@@ -4,11 +4,6 @@
 
 
 
-@{
-    //ViewData["Title"] = "Mitarbeiterverwaltung - Zeiterfassung und Zugangskontrolle";
-    //List<EmployeeModel> testList = new List<EmployeeModel>() { new() { Surname = "Test1", GivenName = "Test2", Email = "test@test.de", CardNumber = "xf8c" } };
-}
-
 
 <div>
     <h1 class="display-6 pb-1 mb-3 myblue">Testseite des Zeiterfassungs- und Türöffnungsbackend für Arduino</h1>
@@ -45,7 +40,7 @@
                 <label for="CardNumber" class="col-form-label">Kartennummer</label>
             </div>
             <div class="col">
-                @Html.TextBoxFor(m => m.NewEmployee.CardNumber, new { @class = "form-control", id = "CardNumber", disabled = "disabled" })
+                @Html.TextBoxFor(m => m.NewCard.CardNumber, new { @class = "form-control", id = "CardNumber", disabled = "disabled" })
             </div>
         </div>
         <div class="form-row align-items-center mt-3">
@@ -60,7 +55,7 @@
         @foreach (var employee in Model.Employees)
         {
             <a href="#" class="list-group-item list-group-item-action" data-id="@employee.Id">
-                @employee.GivenName @employee.Surname - @employee.Email - @employee.CardNumber
+                @employee.GivenName @employee.Surname - @employee.Email - @(employee.Cards != null ? employee.Cards.FirstOrDefault(c => c.IsActive) != null ? employee.Cards.FirstOrDefault(c => c.IsActive).CardNumber : "Keine Karte vorhanden" : "Keine Karte vorhanden")
             </a>
         }
     </div>
@@ -72,7 +67,7 @@
         @foreach (var employee in Model.Employees)
         {
             <a href="#" class="list-group-item list-group-item-action" data-id="@employee.Id">
-                @employee.GivenName @employee.Surname - @employee.Email - @employee.CardNumber
+                @employee.GivenName @employee.Surname - @employee.Email - @(employee.Cards != null ? employee.Cards.FirstOrDefault(c => c.IsActive) != null ? employee.Cards.FirstOrDefault(c => c.IsActive).CardNumber : "Keine Karte vorhanden" : "Keine Karte vorhanden")
             </a>
         }
     </div>

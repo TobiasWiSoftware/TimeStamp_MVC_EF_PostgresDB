@@ -8,7 +8,6 @@ namespace TimeStampMVC.Repository
         Task<bool> AddEmployeeAsync(EmployeeModel employee);
         Task<IEnumerable<EmployeeModel>> GetEmployeesAsync();
         Task<EmployeeModel?> GetEmployeeAsync(int id);
-        Task<EmployeeModel?> GetEmployeeByCardIdAsync(string cardId);
         Task UpdateEmployeeAsync(EmployeeModel employee);
         Task DeleteEmployeeAsync(int id);
     }

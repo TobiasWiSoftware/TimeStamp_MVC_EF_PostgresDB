@@ -14,9 +14,9 @@ namespace TimeStampMVC.Data
             _configuration = configuration;
         }
 
-        public DbSet<EmployeeModel> Employee { get; set; }
-        public DbSet<StamperModel> Stamper { get; set; }
-        public DbSet<StampModel> Stamp { get; set; }
+        public DbSet<EmployeeModel> Employees { get; set; }
+        public DbSet<CardModel> Cards { get; set; }
+        public DbSet<StampModel> Stamps { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

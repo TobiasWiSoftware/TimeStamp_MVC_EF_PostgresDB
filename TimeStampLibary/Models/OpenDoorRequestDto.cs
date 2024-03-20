@@ -5,7 +5,7 @@ namespace TimeStampLibary.Models
 
     public class OpenDoorRequestDto
     {
-        public string BadgeId { get; set; }
-        public string StampId { get; set; }
+        public string? BadgeId { get; set; }
+        public string? StampId { get; set; }
     }
 }

@@ -9,15 +9,15 @@ namespace TimeStampMVC.Services
     public class StampService : IStampService
     {
         private readonly IStampRepository _stampRepository;
-        private readonly IStamperRepository _stamperRepository;
+        private readonly ICardRepository _cardRepository;
         private readonly IEmployeeRepository _employeeRepository;
-       
 
-        public StampService(IStampRepository stampRepository, IEmployeeRepository erepository, IStamperRepository stamperRepository)
+
+        public StampService(IStampRepository stampRepository, IEmployeeRepository erepository, ICardRepository stamperRepository)
         {
             _stampRepository = stampRepository;
             _employeeRepository = erepository;
-            _stamperRepository = stamperRepository;
+            _cardRepository = stamperRepository;
         }
 
         // Adding a new stamp record
@@ -25,58 +25,86 @@ namespace TimeStampMVC.Services
         {
             try
             {
-                // checks if the employee exists in the database
-                var assignedBadge = await _employeeRepository.GetEmployeeByCardIdAsync(stampRequest.BadgeId);
+                string? cardNumber = stampRequest.CardNumber;
 
-                if (assignedBadge == null)
+                // Get card object
+
+                if (cardNumber != null)
                 {
-                    return new StampResponseDto { Status = false, Employeename = null, Datetime = null };
+                    CardModel? card = _cardRepository.GetCard(cardNumber);
+
+                    if (card != null)
+                    {
+                        EmployeeModel? em = await _employeeRepository.GetEmployeeAsync(card.Id);
+
+                        // checks if the employee exists in the database
+
+                        if (em != null)
+                        {
+                            // Check if the last stamp for the employee is "IN"
+                            StampModel? lastStamp = await _stampRepository.GetLastStamp(card);
+
+                            if (lastStamp != null)
+                            {
+                                Status? newstatus = null;
+                                StampType newStampType;
+
+
+                                if (lastStamp.StampType == StampType.TimeStamp && lastStamp.Status == Status.In)
+                                {
+                                    // If the last stamp is "IN", the new stamp should be "OUT"
+                                    newstatus = Status.Out;
+                                    newStampType = StampType.TimeStamp;
+                                }
+                                else if (lastStamp.StampType == StampType.TimeStamp)
+                                {
+                                    // If the last stamp is "OUT", the new stamp should be "IN"
+                                    newstatus = Status.In;
+                                    newStampType = StampType.TimeStamp;
+                                }
+                                else
+                                {
+                                    newStampType = StampType.DoorStamp;
+                                }
+
+                                // Insert a new stamp record using the repository
+                                var newStamp = new StampModel
+                                {
+                                    TimeStamp = DateTime.UtcNow,
+                                    Card = card,
+                                    StampType = newStampType,
+                                    Status = newstatus
+                                };
+
+                                await _stampRepository.AddStampAsync(newStamp);
+
+                                // Return the result
+                                var result = new StampResponseDto
+                                {
+                                    Status = true,
+                                    EmployeeSurname = em.Surname,
+                                    EmployeeGivenName = em.GivenName,
+                                    Datetime = newStamp.TimeStamp
+                                };
+
+                                return result;
+                            }
+
+
+                        }
+                    }
                 }
 
-                // Simulate stamper lookup based on stampId
-                var stamperVar = await _stampRepository.GetStampAsync(stampRequest.StampId);
-                StamperModel stamper = stamperVar.Stamper;
+                throw new Exception();
 
-
-                if (stamper == null)
-                {
-                    return new StampResponseDto { Status = false, Employeename = null, Datetime = null };
-                }
-
-                // Check if the last stamp for the employee is "IN"
-                var lastStamp = await _stampRepository.GetLastStamp(assignedBadge.Id);
-
-                var newStatus = (lastStamp != null && lastStamp.Status == "IN") ? "OUT" : "IN";
-
-                // Insert a new stamp record using the repository
-                var newStamp = new StampModel
-                {
-                    BadgeId =  stampRequest.BadgeId,
-                    TimeStamp = DateTime.UtcNow,    
-                    Stamper = stamper,
-                    Status = newStatus
-                };
-
-                await _stampRepository.AddStampAsync(newStamp);
-
-                // Return the result
-                var result = new StampResponseDto
-                {
-                    Status = true,
-                    Employeename = $"{assignedBadge.GivenName} {assignedBadge.Surname}",
-                    Datetime = newStamp.TimeStamp
-                };
-
-                return result;
             }
             catch (Exception ex)
             {
                 // Log the exception
                 Console.WriteLine($"Error in StampService: {ex.Message}");
-                throw;
+                return new StampResponseDto { Status = false, EmployeeSurname = null, EmployeeGivenName = null, Datetime = null };
             }
 
-            throw new NotImplementedException();
         }
     }
 }

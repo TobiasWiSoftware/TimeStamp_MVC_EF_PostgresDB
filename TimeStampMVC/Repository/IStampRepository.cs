@@ -7,6 +7,6 @@ namespace TimeStampMVC.Repository
     {
         Task AddStampAsync(StampModel stamp);
         Task<StampModel?> GetStampAsync(string id);
-        Task<StampModel?> GetLastStamp(int id);
+        Task<StampModel?> GetLastStamp(CardModel card);
     }
 }

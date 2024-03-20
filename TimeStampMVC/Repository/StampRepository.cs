@@ -18,18 +18,18 @@ namespace TimeStampMVC.Repository
 
         public async Task AddStampAsync(StampModel stamp)
         {
-            _context.Stamp.Add(stamp);
+            _context.Stamps.Add(stamp);
             await _context.SaveChangesAsync();
         }
 
         public async Task<StampModel?> GetStampAsync(string id)
         {
-            return await _context.Stamp.FirstOrDefaultAsync(s => s.Id.ToString() == id);
+            return await _context.Stamps.FirstOrDefaultAsync(s => s.Id.ToString() == id);
         }
 
-        public async Task<StampModel?> GetLastStamp(int id)
+        public async Task<StampModel?> GetLastStamp(CardModel card)
         {
-            return await _context.Stamp.Where(s => s.Id == id).OrderByDescending(s => s.TimeStamp).FirstOrDefaultAsync();
+            return await _context.Stamps.Where(s => s.Card != null && s.Card.Id == card.Id).OrderByDescending(s => s.TimeStamp).FirstOrDefaultAsync();
         }
 
 

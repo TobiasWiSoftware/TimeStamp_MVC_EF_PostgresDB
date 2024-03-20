@@ -18,7 +18,7 @@ namespace TimeStampMVC.Repository
         {
             try
             {
-                _context.Employee.Add(employee);
+                _context.Employees.Add(employee);
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -30,22 +30,17 @@ namespace TimeStampMVC.Repository
 
         public async Task<IEnumerable<EmployeeModel>> GetEmployeesAsync()
         {
-            return await _context.Employee.ToListAsync();
+            return await _context.Employees.ToListAsync();
         }
 
         public async Task<EmployeeModel?> GetEmployeeAsync(int id)
         {
-            return await _context.Employee.FirstOrDefaultAsync(e => e.Id == id);
-        }
-
-        public async Task<EmployeeModel?> GetEmployeeByCardIdAsync(string cardId)
-        {
-            return await _context.Employee.FirstOrDefaultAsync(e => e.CardNumber == cardId);
+            return await _context.Employees.FirstOrDefaultAsync(e => e.Id == id);
         }
 
         public async Task UpdateEmployeeAsync(EmployeeModel employee)
         {
-            _context.Employee.Update(employee);
+            _context.Employees.Update(employee);
             await _context.SaveChangesAsync();
         }
 
@@ -54,7 +49,7 @@ namespace TimeStampMVC.Repository
             var employee = await GetEmployeeAsync(id);
             if (employee != null)
             {
-                _context.Employee.Remove(employee);
+                _context.Employees.Remove(employee);
                 await _context.SaveChangesAsync();
             }
         }

@@ -12,8 +12,8 @@ using TimeStampMVC.Data;
 namespace TimeStampMVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240222110624_FirstMigration")]
-    partial class FirstMigration
+    [Migration("20240320105526_First")]
+    partial class First
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,42 @@ namespace TimeStampMVC.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("TimeStampLibary.Models.CardModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("EmloyeeId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("EmployeeId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("ExpiryDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("ForDoor")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("ForTime")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("IssueDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("Cards");
+                });
 
             modelBuilder.Entity("TimeStampLibary.Models.EmployeeModel", b =>
                 {
@@ -44,7 +80,7 @@ namespace TimeStampMVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Employee");
+                    b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("TimeStampLibary.Models.StampModel", b =>
@@ -55,55 +91,46 @@ namespace TimeStampMVC.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("BadgeId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("StamperId")
+                    b.Property<int?>("CardId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("StampType")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("TimeStamp")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("StamperId");
+                    b.HasIndex("CardId");
 
-                    b.ToTable("Stamp");
+                    b.ToTable("Stamps");
                 });
 
-            modelBuilder.Entity("TimeStampLibary.Models.StamperModel", b =>
+            modelBuilder.Entity("TimeStampLibary.Models.CardModel", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                    b.HasOne("TimeStampLibary.Models.EmployeeModel", "Employee")
+                        .WithMany("Cards")
+                        .HasForeignKey("EmployeeId");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("StamperId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("StamperName")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Stamper");
+                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("TimeStampLibary.Models.StampModel", b =>
                 {
-                    b.HasOne("TimeStampLibary.Models.StamperModel", "Stamper")
+                    b.HasOne("TimeStampLibary.Models.CardModel", "Card")
                         .WithMany()
-                        .HasForeignKey("StamperId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CardId");
 
-                    b.Navigation("Stamper");
+                    b.Navigation("Card");
+                });
+
+            modelBuilder.Entity("TimeStampLibary.Models.EmployeeModel", b =>
+                {
+                    b.Navigation("Cards");
                 });
 #pragma warning restore 612, 618
         }

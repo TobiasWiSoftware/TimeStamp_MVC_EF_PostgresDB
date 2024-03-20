@@ -10,15 +10,17 @@ namespace TimeStampLibary.ViewModels
     public class IndexModel
     {
         public EmployeeModel NewEmployee { get; set; } = new();
-        public List<EmployeeModel> Employees { get; set; }
+        public CardModel NewCard { get; set; }
+        public List<EmployeeModel> Employees { get; set; } = new();
 
         public IndexModel()
         {
-            
+            NewCard = new(DateTime.UtcNow, DateTime.UtcNow.AddYears(1), true, true, true, NewEmployee);
         }
         public IndexModel(List<EmployeeModel> employees)
         {
             Employees = employees;
+            NewCard = new(DateTime.UtcNow, DateTime.UtcNow.AddYears(1), true, true, true, NewEmployee);
         }
 
     }

@@ -7,10 +7,10 @@ namespace TimeStampMVC.DataSeed
     {
         public static void Initialize(ApplicationDbContext context)
         {
-            context.Database.EnsureCreated();
+            //bool existing = context.Database.EnsureCreated();
 
             // Look for any employees.
-            if (context.Employee.Any())
+            if (context.Employees.Any())
             {
                 return;   // DB has been seeded
             }
@@ -29,9 +29,22 @@ namespace TimeStampMVC.DataSeed
 
             foreach (EmployeeModel e in employees)
             {
-                context.Employee.Add(e);
+                context.Employees.Add(e);
             }
             context.SaveChanges();
+
+            List<CardModel> cards = new List<CardModel>
+            {
+                new CardModel(DateTime.UtcNow, DateTime.UtcNow.AddYears(1), true, true, true, employees[1]),
+                new CardModel(DateTime.UtcNow, DateTime.UtcNow.AddYears(1), true, false, true, employees[2]),
+                new CardModel(DateTime.UtcNow, DateTime.UtcNow.AddYears(1), true, true, true, employees[3]),
+                new CardModel(DateTime.UtcNow, DateTime.UtcNow.AddYears(1), true, true, false, employees[4]),
+            };
+
+            foreach (CardModel c in cards)
+            {
+                context.Cards.Add(c);
+            }
         }
     }
 

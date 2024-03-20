@@ -8,14 +8,10 @@ namespace TimeStampLibary.Models
         public string? GivenName { get; set; }
         public string? Surname { get; set; }
         public string? Email { get; set; }
-        public string? CardNumber { get => _cardNumber; }
-
-        private string _cardNumber = string.Empty;
-
+        public List<CardModel>? Cards { get; set; }
 
         public EmployeeModel()
         {
-            SetCardNumber();
         }
 
         // The employee model constructor with parameters
@@ -24,26 +20,6 @@ namespace TimeStampLibary.Models
             GivenName = givenName;
             Surname = surname;
             Email = email;
-            SetCardNumber();
-        }
-
-
-
-        private void SetCardNumber()
-        {
-            Random random = new Random();
-            for (int i = 0; i < 10; i++)
-            {
-                int num = random.Next(0, 36);
-                if (num < 10)
-                {
-                    _cardNumber += num.ToString();
-                }
-                else
-                {
-                    _cardNumber += ((char)(num + 87)).ToString();
-                }
-            }
         }
 
     }

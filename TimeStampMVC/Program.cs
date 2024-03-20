@@ -6,6 +6,8 @@ using TimeStampMVC.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+Console.WriteLine($"Current dir: {Environment.CurrentDirectory}");
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>();
@@ -17,7 +19,7 @@ builder.Services.AddScoped<IOpenDoorRepository, OpenDoorRepository>();
 builder.Services.AddScoped<IOpenDoorService, OpenDoorService>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
-builder.Services.AddScoped<IStamperRepository, StamperRepository>();
+builder.Services.AddScoped<ICardRepository, CardRepository>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
